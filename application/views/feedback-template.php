@@ -35,7 +35,7 @@ if(isset($success) AND $success == TRUE)
 {
 	if(is_array($success_message))
 	{
-		echo '<div class="alert alert-success"" role="alert">
+		echo '<div class="alert alert-success" role="alert">
      	      	<strong>'.__('Oops!').'</strong> '.__('Something went wrong!').'<br />
    				<span>'.__('Please check the following:').'</span>';
 		foreach($success_message as $key => $value)

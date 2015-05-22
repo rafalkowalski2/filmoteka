@@ -1,29 +1,13 @@
-<?php 
-header('Content-type: application/javascript');
-?>
-/*$(document).ready(function(){
-    $('a.locations-list').click(function(e)
-    {
-    	e.preventDefault();
-    	if(confirm('test'))
-    	{
-    		alert('confirmed');
-    	}
-    	var id = $(this).data('id');
-    	$('.'+id).hide('slow');
-    	//ajaxowe zapytanie 
-    })
-});
-*/
-$(document).ready(function(){
+$(document).ready(function(){	
+	var film_name = $('.add-film');
+	var film_list_input = new Array('film-name', 'genres', 'releasedate','fw_grade','carrier','location','description','resolution', 'filesize', 'duration', 'film-language');	
 	$('#genres').multiselect({
 		enableCaseInsensitiveFiltering: true,
 		buttonWidth: '100%',
 		numberDisplayed: 5,
 		maxHeight: 200,
 		// $('#example-select').multiselect('select', ['1', '2', '4']); // zaznaczenie kilku opcji przez js 
-	}); 	
-	var film_name = $('.add-film');	
+	}); 
 	film_name.autocomplete({
       source: function( request, response ) {
 			//alert('poszło');
@@ -88,10 +72,35 @@ $(document).ready(function(){
           	})
     	}
     });
+    
     $("form[name=form-add-film]").submit(function(e)
     {
-    	//e.preventDefault(); wyłączenie formularza 
-    	alert('wysyłanie formularza');
+    	 
+    	var _error = '<div class="alert alert-danger" role="alert"><ul>';
+    	for(i in film_list_input)
+    	{
+    		if(!$('#'+film_list_input[i]).val())
+    		{
+    			e.preventDefault(); //wyłączenie formularza 
+    			if(film_list_input[i] != 'genres')
+    			{
+    				$('#'+film_list_input[i]).parent().addClass('has-error has-feedback');
+    				$('#'+film_list_input[i]).after('<div id="'+i+'"><span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span><span id="inputError2Status" class="sr-only">(error)</span></div>');
+    			}
+    			
+    			
+    			_error += "<li>"+film_list_input[i]+"</li>";
+    		}
+    		else
+    		{
+    			
+    			$('#'+film_list_input[i]).parent().removeClass('has-error has-feedback');
+    			$('#'+[i]).remove();
+
+    		}	
+    	}
+    	_error += "</div></ul>";
+    	$('#js_info').html(_error);
     })
 	//alert('działa');
 })

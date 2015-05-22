@@ -2,14 +2,15 @@
 <div class="jumbotron">
 	<div class="container">
 		<div class="row">
-			<form class="form-horizontal" action="<?php echo Request::detect_uri();?>" role="form" name="form-add-film" method="post">
-  					<p><h3><?php echo __('ADD_FILM');?></h3></p>
+			<p><h3><?php echo __('ADD_FILM');?></h3></p>
+			<div id="js_info"></div>
   					<?php
   					echo View::factory('feedback-template')->bind('error', $error)
   															->bind('error_message', $error_message)
 															->bind('success', $success)
 															->bind('success_message', $success_message);
   					?>
+			<form class="form-horizontal" action="<?php echo Request::detect_uri();?>" role="form" name="form-add-film" method="post">
   					<div class="col-sm-6">
   						<div id="test">
   						</div>
@@ -53,10 +54,12 @@
      						<input type="text" name="fw_grade" class="form-control" id="fw_grade" placeholder="<?php echo __('ENTER_FILMWEB_TITLE');?>" value="<?php echo Request::current()->post('fw_grade');?>">
     			 		</div>
   					</div>
-  					<div class="form-group">
+  					<div class="form-group has-error has-feedback">
     					<label class="control-label col-sm-3" for="my_grade"><?php echo __('My grade:');?></label>
     					<div class="col-sm-9">
-     						<input type="text" name="my_grade" class="form-control" id="my_grade" placeholder="<?php echo __('Enter my grade');?>" value="<?php echo Request::current()->post('my_grade');?>">
+     						<input type="text" name="my_grade" class="form-control" id="my_grade" placeholder="<?php echo __('Enter my grade');?>" value="<?php echo Request::current()->post('my_grade');?>" aria-describedby="inputError2Status">
+  <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+  <span id="inputError2Status" class="sr-only">(error)</span>>
     			 		</div>
   					</div>
   					<div class="form-group">
