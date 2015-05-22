@@ -1,3 +1,6 @@
+<?php 
+header('Content-type: application/javascript');
+?>
 /*$(document).ready(function(){
     $('a.locations-list').click(function(e)
     {

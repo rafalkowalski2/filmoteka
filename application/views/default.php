@@ -119,6 +119,6 @@
 		<script src="http://<?php echo $server;?>/js/bootstrap.min.js"></script>
 		<script src="http://<?php echo $server;?>/js/jquery-ui.min.js"></script>
 		<script src="http://<?php echo $server;?>/js/bootstrap-multiselect.js"></script>
-		<script src="http://<?php echo $server;?>/js/filmoteka.js"></script>
+		<script src="http://<?php echo $server;?>/js/filmoteka.php"></script>
 	</body>
 </html>
