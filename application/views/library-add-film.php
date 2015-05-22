@@ -54,12 +54,10 @@
      						<input type="text" name="fw_grade" class="form-control" id="fw_grade" placeholder="<?php echo __('ENTER_FILMWEB_TITLE');?>" value="<?php echo Request::current()->post('fw_grade');?>">
     			 		</div>
   					</div>
-  					<div class="form-group has-error has-feedback">
+  					<div class="form-group">
     					<label class="control-label col-sm-3" for="my_grade"><?php echo __('My grade:');?></label>
     					<div class="col-sm-9">
-     						<input type="text" name="my_grade" class="form-control" id="my_grade" placeholder="<?php echo __('Enter my grade');?>" value="<?php echo Request::current()->post('my_grade');?>" aria-describedby="inputError2Status">
-  <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-  <span id="inputError2Status" class="sr-only">(error)</span>>
+     						<input type="text" name="my_grade" class="form-control" id="my_grade" placeholder="<?php echo __('Enter my grade');?>" value="<?php echo Request::current()->post('my_grade');?>" >
     			 		</div>
   					</div>
   					<div class="form-group">

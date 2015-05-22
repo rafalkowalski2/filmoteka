@@ -1,6 +1,18 @@
 $(document).ready(function(){	
 	var film_name = $('.add-film');
 	var film_list_input = new Array('film-name', 'genres', 'releasedate','fw_grade','carrier','location','description','resolution', 'filesize', 'duration', 'film-language');	
+	function msieversion() {
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE ");
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
+        {
+        	return true;
+        }
+        else                 // If another browser, return 0
+        {
+        	return false;
+        }
+	}	
 	$('#genres').multiselect({
 		enableCaseInsensitiveFiltering: true,
 		buttonWidth: '100%',
@@ -23,7 +35,9 @@ $(document).ready(function(){
             	},
             	success: function(data) {
             		$(":input:not(#filmweb)").prop("disabled", false);
-            		response(data);
+            		if(msieversion()) $(":input:not(#filmweb)").removeAttr("disabled");
+            		else $(":input:not(#filmweb)").prop("disabled", false);
+              		response(data);
             		
           		},
          	 	error: function(e, xhr) {
@@ -52,11 +66,12 @@ $(document).ready(function(){
             		$('#filmweb').val(ui.item.href);
             		$('#description').html(data.desc);
             		$('#fw_grade').val(data.fw_grade.replace(',', '.'));
+            		$(":input").removeAttr("disabled")
             		$('#releasedate').removeAttr("type");
 					$('#releasedate').prop('type', 'text');
             		$('#releasedate').val(data.release_date);
             		$('#releasedate').removeAttr("type");
-					$('#releasedate').prop('type', 'date')
+					$('#releasedate').prop('type', 'date');
 					
             		 //alert(data.desc);
             	},
@@ -69,6 +84,7 @@ $(document).ready(function(){
           	.done(function( )
           	{
           		$(":input").prop("disabled", false);
+          		$(":input").removeAttr("disabled")
           	})
     	}
     });

@@ -235,13 +235,13 @@ class Controller_Films extends Controller_PageTemplate {
 	 	$release_temp = $temp[5];
 		$r_t_2 = explode('<span>', $release_temp);
 		$release = explode(" ", $r_t_2[1]);
-		$release[2] = str_replace(array('stycznia', 'lutego', 'marca','kwietnia','maja','czerwca','lipca','sierpnia','września','paździenika','listopada','grudnia'), array('01', '02','03','04','05','06','07','08','09','10','11','12'), $release[2]);
+		$release[2] = str_replace(array('stycznia', 'lutego', 'marca','kwietnia','maja','czerwca', 'czerwiec','lipca','sierpnia','września','października','listopada','grudnia'), array('01', '02','03','04','05','06', '06', '07','08','09','10','11','12'), $release[2]);
 		if($release[1]<10)
 		{
 			$release[1] ='0'.$release[1];
 		}
 		$release_date = $release[3].'-'.$release[2].'-'.$release[1];
-	 	$temp = array("release_date" => $release_date, "desc" => trim(strip_tags($desc[1])), "fw_grade" => trim(strip_tags($grade[1])));
+	 	$temp = array("release_date" => strip_tags($release_date), "desc" => trim(strip_tags($desc[1])), "fw_grade" => trim(strip_tags($grade[1])));
 		return $temp;
 	}
 	private function _ajax_get_fw_list_film($name) {
