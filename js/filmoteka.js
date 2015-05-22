@@ -41,7 +41,8 @@ $(document).ready(function(){
           		},
          	 	error: function(e, xhr) {
          	 		$(":input:not(#filmweb)").prop("disabled", false);
-             		//alert(xhr); 
+             		//alert(xhr);
+             		$('#test').html(xhr); 
           		}
         	})
       	},

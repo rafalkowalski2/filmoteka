@@ -8,27 +8,29 @@
 <body>
       <?php
  
-$strona = "http://www.filmweb.pl/Prestiz";
+echo $strona = "onet.pl";
 $useragent="Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1";
  
  
- 
+ if(!function_exists("curl_init")) echo "brak curla";
       $rC = curl_init();
 curl_setopt($rC, CURLOPT_HEADER, 1);
+curl_setopt($rC, CURLOPT_FOLLOWLOCATION, 0);
 curl_setopt($rC, CURLOPT_COOKIEFILE, 'cookies.txt');
 curl_setopt($rC, CURLOPT_COOKIEJAR, 'cookiesjar.txt');
 curl_setopt($rC, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($rC, CURLOPT_VERBOSE, 0);
 curl_setopt($rC, CURLOPT_USERAGENT, $useragent);
 curl_setopt($rC, CURLOPT_REFERER, 'www.google.pl');
-curl_setopt($rC, CURLOPT_URL, "$strona");
+curl_setopt($rC, CURLOPT_URL, $strona);
  
       $wejscie = curl_exec($rC);
       curl_setopt($rC, CURLOPT_REFERER, $strona);
       $wejscie = curl_exec($rC);
- 
+
       curl_close($rC);
-     preg_match('/<div class="filmPlot bottom-15"><p class=text>(.+?)<\/p><\/div>/ism', $wejscie, $desc); 
+	   echo $wejscie;
+     /*preg_match('/<div class="filmPlot bottom-15"><p class=text>(.+?)<\/p><\/div>/ism', $wejscie, $desc); 
 	 //print_r($desc);
 	 preg_match('/<span property="v:average">(.+?)<\/span>/ism', $wejscie, $grade);
 	 //print_r($grade);
@@ -47,7 +49,7 @@ curl_setopt($rC, CURLOPT_URL, "$strona");
 		//echo $release_date = $release[3].'-'.$release[2].'-'.$release[1];
 	 preg_match('/<ul class="inline sep-comma genresList">(.+?)<\/ul>/ism', $wejscie, $genres_temp);
 		$genres = explode('<li>', $genres_temp[1]);
-		print_r($genres);
+		print_r($genres);*/
 	  ?>
 </body>
 </html>

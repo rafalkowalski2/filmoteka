@@ -277,7 +277,7 @@ class Controller_Films extends Controller_PageTemplate {
 		 //return $temp;
 		 *
 		 */
-		$temp = array();
+		//$temp = array();
 		for ($i = 0; $i < 10; $i++) {
 			$temp[$i] = (object) array('label' => trim(strip_tags($wyjscie[0][$i])), 'value' => trim(strip_tags($wyjscie[0][$i])), 'href' => $wyjscie[1][$i]);
 		}
