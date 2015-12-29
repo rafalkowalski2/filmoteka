@@ -48,7 +48,7 @@
 										//{
 											echo '<tr style="padding:10px;">
 													<td>'.$i.'</td>
-													<td>'.$value['f_name'].'</td>
+													<td><a href="'.URL::site(Request::current()->param('language').'/films/view/'.$value['f_id']).'">'.$value['f_name'].'</a></td>
 													<td class="col-md-2">'.$value['d_resolution'].'</td>
 													<td>'.$value['l_name'].'</td>
 													<td class="col-md-2">

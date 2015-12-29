@@ -97,9 +97,9 @@
 		->execute()
 		->get('id');
 	}
-	public function get_film($user_id, $film_id)
+	public function get_film($user_id = 0, $film_id)
 	{
-		return DB::select(
+            $query = DB::select(
 			array('films.id', 'f_id'),
 			array('films.name','f_name'),
 			array('films.releasedate', 'f_releasedate'),
@@ -138,10 +138,15 @@
 		->join('films_carries')
 		->on('films_carries.film_id', '=', 'films.id')
 		->join('carries')
-		->on('carries.id', '=', 'films_carries.carrier_id')
-		->where('users.id', '=', $user_id)
-		->and_where('films.id', '=', $film_id)
+		->on('carries.id', '=', 'films_carries.carrier_id');
+                if($user_id != 0)
+                {
+                    $query = $query->where('users.id', '=', $user_id);
+                }
+		
+		$query = $query->and_where('films.id', '=', $film_id)
 		->execute();
+		return $query;
 	}
 	public function get_number_of_films($user_id)
 	{

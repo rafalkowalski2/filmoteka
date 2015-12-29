@@ -188,10 +188,22 @@ class Controller_Films extends Controller_PageTemplate {
 			$this -> template -> content 
 			-> set('user_films', $user_films)
 			->set('pagination', $pagination);
-			$this -> response -> body($this -> template -> content);
+			//$this -> response -> body($this -> template -> content);
 		}
 	}
-
+        public function action_view()
+        {
+            if((int)$this->request->param('id'))
+            {
+                $films = ORM::factory('Film');
+                $films = $films -> get_film(0, $this->request->param('id'));
+                print_r($films);
+            }
+            else
+            {
+                echo '<h1>Cos poszło nie tak</h1>';
+            }
+        }
 	public function action_ajax_list_film() {
 		header('Content-type:application/json');
 		header('Content-type: text/plain; charset=utf-8');
@@ -219,15 +231,16 @@ class Controller_Films extends Controller_PageTemplate {
 		curl_setopt($rC, CURLOPT_VERBOSE, 0);
 		curl_setopt($rC, CURLOPT_USERAGENT, $useragent);
 		curl_setopt($rC, CURLOPT_REFERER, 'www.google.pl');
-		curl_setopt($rC, CURLOPT_URL, "$strona");
+		curl_setopt($rC, CURLOPT_URL, $strona);
 
 		$wejscie = curl_exec($rC);
 		curl_setopt($rC, CURLOPT_REFERER, $strona);
 		$wejscie = curl_exec($rC);
-
+                //print_r($wejscie);
 		curl_close($rC);
-		preg_match('/<div class="filmPlot bottom-15"><p class=text>(.+?)<\/p><\/div>/ism', $wejscie, $desc); 
+		preg_match('/<div class="filmPlot bottom-15"><p class="text">(.+?)<\/p><\/div>/ism', $wejscie, $desc); 
 	 	
+                
 	 	preg_match('/<span property="v:average">(.+?)<\/span>/ism', $wejscie, $grade);
 		preg_match('/<ul class="inline sep-comma"><li><a href="(.+?)">USA<\/a><\/li><\/ul><\/td><\/tr><tr><th>(.+?):<\/th><td><a href="(.+?)"> <span> (.+?)<\/span>(.+?)<span> (.+?) <\/span> (.+?) <\/a><\/td><\/tr>/ism', $wejscie, $release_date);
 	 	$temp = explode('inline sep-comma', $wejscie);
@@ -241,8 +254,10 @@ class Controller_Films extends Controller_PageTemplate {
 			$release[1] ='0'.$release[1];
 		}
 		$release_date = $release[3].'-'.$release[2].'-'.$release[1];
+                //$desc = 'content tymczasowy';
 	 	$temp = array("release_date" => strip_tags($release_date), "desc" => trim(strip_tags($desc[1])), "fw_grade" => trim(strip_tags($grade[1])));
-		return $temp;
+		 //print_r($desc);
+                return $temp;
 	}
 	private function _ajax_get_fw_list_film($name) {
 		$strona = "http://www.filmweb.pl/search?q=" . $name;
