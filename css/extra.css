@@ -1,5 +1,50 @@
+*:after, *:before, * {
+    transition: color 0.15s ease-out, background 0.15s ease-out, border 0.15s ease-out, opacity 0.15s ease-out;
+}
+
 .film-div-label
 {
 	text-align:right;
 	font-weight:bold;
+}
+.film-action
+{
+    display:none;
+}
+.film-view-header:hover .film-action
+{
+    display: inline;
+}
+.inline-headers h2, .inline-headers h3 {
+  display: inline-block;
+  vertical-align: baseline;
+}
+/*loading*/
+.hidden-content
+{
+    display:none;
+}
+#loadind-wrapper
+{
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    position: fixed;
+    background: #fff;
+    z-index: 9998;
+    opacity: 0.8;
+}
+#loading-animation
+{
+    
+    text-align:center;
+    padding-top:12%;
+    vertical-align: middle;
+    opacity: 1;
+    z-index: 9999;
+}
+#loading-text
+{
+    text-align:center;
 }

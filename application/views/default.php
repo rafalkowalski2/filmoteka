@@ -13,6 +13,10 @@
 		<link rel="stylesheet" href="http://<?php echo $server;?>/css/bootstrap-multiselect.css">
 	</head>
 	<body>
+            <div id="loadind-wrapper" class="hidden-content">
+                <div id="loading-animation"><img src="gfx/loading.gif" alt="loading-gif"/></div>
+                <div id="loading-text"><h1>Ładowanie</h1></div>
+            </div>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
@@ -88,12 +92,25 @@
     		<div class="container">
     			<div class="row">
     				<div class="col-sm-11">
-    					<p>&copy; Rafał Kowalski 2015</p>
+    					<p>&copy; Rafał Kowalski
+                                            <?php 
+                                            $current_date = Date('Y');
+                                            if($current_date != 2015)
+                                            {
+                                                echo '2015 - '.$current_date;
+                                            }
+                                            else
+                                            {
+                                                echo $current_date;
+                                            }
+                                            ?>
+                                        </p>
+                                        <p>VER 30/12/2015 01:04</p>
     				</div>
     				<div class="col-sm-1">
     					<div class="form-group">
     						<form class="form-horizontal" action="<?php echo Request::detect_uri();?>" role="form" method="post">
-    							<select claas="form-control" onchange="this.form.submit()" id="language" name="language">
+    							<select class="form-control" onchange="this.form.submit()" id="language" name="language">
     								<?php
     								foreach($langs as $key => $value)
 									{
