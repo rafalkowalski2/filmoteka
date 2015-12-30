@@ -31,7 +31,7 @@ $(document).ready(function () {
                 data: {'name': encodeURIComponent(film_name.val())},
                 beforeSend: function ()
                 {
-                    $('#test').append(encodeURIComponent(film_name.val()));
+                    //$('#test').append(encodeURIComponent(film_name.val()));
                     $(loading_layer).fadeIn('fast', function ()
                     {
                         $(this).removeClass('hidden-content');
@@ -42,6 +42,7 @@ $(document).ready(function () {
                     {
                         $(this).addClass('hidden-content');
                     })
+
                     response(data);
 
                 },
@@ -50,7 +51,7 @@ $(document).ready(function () {
                     {
                         $(this).addClass('hidden-content');
                     })
-                    $('#test').html(textStatus+" "+jqXHR.responseText);
+                    $('#test').html(textStatus + " " + jqXHR.responseText);
                 }
             })
         },
@@ -86,6 +87,8 @@ $(document).ready(function () {
                             $('#releasedate').removeAttr("type");
                             $('#releasedate').prop('type', 'date');
                             $('#poster').val(data.poster);
+                            alert(data.countSeason);
+                            $('.poster-div').append('<img src="' + data.poster + '" class="img-thumbnail" width="200px"/>');
                             //$('#test').html('<img src="'+data.poster+'">');
                             $.each(data.genres, function (i, item)
                             {
@@ -115,7 +118,7 @@ $(document).ready(function () {
                     })
         }
     });
-
+    //walidacja
     $("form[name=form-add-film]").submit(function (e)
     {
 
@@ -143,6 +146,28 @@ $(document).ready(function () {
         }
         _error += "</div></ul>";
         $('#js_info').html(_error);
+    });
+    $('.delete-film').click(function (e)
+    {
+        e.preventDefault();
+        var _film_id = $(this).data('film-id');
+        alert(_film_id);
+        $.ajax
+                ({
+                    method: "POST",
+                    url: '/en/films/ajax_film_remove',
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    dataType: "JSON",
+                    data: {'film_id':  _film_id},
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $(loading_layer).fadeOut('fast', function ()
+                        {
+                            $(this).addClass('hidden-content');
+                        })
+                        //alert('rzucam bledem');
+                        $('#error').html(jqXHR.responseText);
+                    },
+                });
     })
     //alert('działa');
 })

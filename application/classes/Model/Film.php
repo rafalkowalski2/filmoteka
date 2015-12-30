@@ -100,7 +100,7 @@ class Model_Film extends ORM {
 
     public function get_film($user_id = 0, $film_id) {
         $query = DB::select(
-                        array('films.id', 'f_id'), array('films.name', 'f_name'), array('films.poster', 'f_poster'), array('films.releasedate', 'f_releasedate'), array('films.description', 'f_description'), array('films.fw_grade', 'f_fw_grade'), array('films.filmweb', 'f_filmweb'), array('carries.id', 'c_id'), array('carries.name', 'c_name'), array('genres.id', 'gen_id'), array('genres.name', 'gen_name'), array('locations.id', 'l_id'), array('locations.name', 'l_name'), array('user_film_details.id', 'd_id'), array('user_film_details.filesize', 'd_filesize'), array('user_film_details.resolution', 'd_resolution'), array('user_film_details.duration', 'd_duration'), array('user_film_details.language', 'd_language')
+                        array('films.id', 'f_id'), array('films.name', 'f_name'), array('films.poster', 'f_poster'), array('films.poster_hash', 'f_poster_hash'), array('films.releasedate', 'f_releasedate'), array('films.description', 'f_description'), array('films.fw_grade', 'f_fw_grade'), array('films.filmweb', 'f_filmweb'), array('carries.id', 'c_id'), array('carries.name', 'c_name'), array('genres.id', 'gen_id'), array('genres.name', 'gen_name'), array('locations.id', 'l_id'), array('locations.name', 'l_name'), array('user_film_details.id', 'd_id'), array('user_film_details.filesize', 'd_filesize'), array('user_film_details.resolution', 'd_resolution'), array('user_film_details.duration', 'd_duration'), array('user_film_details.language', 'd_language')
                 )
                 ->from($this->_table_name)
                 ->join('films_users')

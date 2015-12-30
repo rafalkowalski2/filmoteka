@@ -57,10 +57,12 @@ class Controller_Films extends Controller_PageTemplate {
                             //film jest w bazie, dodanie filmu do usera.
                         }
                     } else {//filmu nie ma w bazie
-                       
                         $film->name = $this->request->post('film-name');
-                        
+
                         $film->poster = $this->request->post('poster');
+                        $film->poster_hash = md5($this->request->post('film-name'));
+
+
 
                         $film->releasedate = $this->request->post('releasedate');
 
@@ -73,6 +75,8 @@ class Controller_Films extends Controller_PageTemplate {
                         print_r($film->save());
                         //zapisanie filmu do bazy
                         echo $this->_film_id = $film->id;
+                        $dir = 'upload/poster/';
+                        copy($this->request->post('poster'), DOCROOT . $dir . md5($this->request->post('film-name')) . '.jpg');
                         //id zapisanego filmu
                         $user = ORM::factory('User')->where('id', '=', $this->_auth->get_user()->pk())->find();
                         $film->add('users', $user);
@@ -200,10 +204,21 @@ class Controller_Films extends Controller_PageTemplate {
 
     public function action_ajax_list_film() {
         header('Content-type:application/json');
-        header('Content-type: text/html; charset=utf-8');
+        //header('Content-type: text/html; charset=utf-8');
         $this->auto_render = false;
         $list = $this->_ajax_get_fw_list_film($this->request->post('name'));
         print_r(json_encode($list));
+    }
+
+    private function _ajax_remove_film($id) {
+        $film = ORM::factory('Film', $id);
+        echo $film->poster_hash;
+        echo '<img src="upload/poster/' . $film->poster_hash . '.jpg" alt="upload/poster/' . $film->poster_hash . '.jpg">';
+    }
+
+    public function action_ajax_film_remove() {
+        $this->auto_render = false;
+        $this->_ajax_remove_film($this->request->post('film_id'));
     }
 
     public function action_ajax_film_detail() {
@@ -214,6 +229,8 @@ class Controller_Films extends Controller_PageTemplate {
     }
 
     private function _ajax_get_detail_film($href) {
+        (bool)$serial = false;
+        if(strpos($href, 'serial')) (bool)$serial = true;
         $strona = "http://www.filmweb.pl" . $href;
         $useragent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1";
 
@@ -235,33 +252,53 @@ class Controller_Films extends Controller_PageTemplate {
         preg_match('/<div class="filmPlot bottom-15"><p class="text">(.+?)<\/p><\/div>/ism', $wejscie, $desc);
         //preg_match('/<div class="filmTime">(.+?)<\/div>/ism', $wejscie, $duration);
         //print_r($duration);
-        preg_match('/<a rel="v:image" href="(.+?)" class="imageBorderShadow film_mini"><img src="(.+?)" alt="(.+?)" title="(.+?)"><\/a>/ism',$wejscie, $image);
+        preg_match('/<a rel="v:image" href="(.+?)" class="imageBorderShadow film_mini"><img src="(.+?)" alt="(.+?)" title="(.+?)"><\/a>/ism', $wejscie, $image);
         $image = $image[1];
         preg_match('/<ul class="inline sep-comma genresList">(.+?)<\/ul>/ism', $wejscie, $genres);
-        $genres = explode('<li>', $genres[1]);
-        $temp = array();
-        foreach($genres as $key => $val)
-        {
-            if($key != 0)
-            {
-                $temp[$key] = trim(strip_tags(trim($val)));
+        if (!$serial) {
+            $genres = explode('<li>', $genres[1]);
+
+            $temp = array();
+            foreach ($genres as $key => $val) {
+                if ($key != 0) {
+                    $temp[$key] = trim(strip_tags(trim($val)));
+                }
             }
+            $genres = $temp;
         }
-        $genres = $temp;
+        else
+        {
+            $genres[1] = "Serial"; //zrzutowani typu
+        }
+        if($serial)
+        {
+            $season;
+            preg_match('/<div class="box full-width"><ul class="list inline sep-line">(.+?)><\/ul><\/div>/ism', $wejscie, $season);
+            $season = explode('<li>', $season[1]);
+            $count_season = sizeof($season) - 1;
+        }
         preg_match('/<span property="v:average">(.+?)<\/span>/ism', $wejscie, $grade);
         preg_match('/<ul class="inline sep-comma"><li><a href="(.+?)">USA<\/a><\/li><\/ul><\/td><\/tr><tr><th>(.+?):<\/th><td><a href="(.+?)"> <span> (.+?)<\/span>(.+?)<span> (.+?) <\/span> (.+?) <\/a><\/td><\/tr>/ism', $wejscie, $release_date);
         $temp = explode('inline sep-comma', $wejscie);
         //$genre_temp  = $temp[4];
-        $release_temp = $temp[5];
-        $r_t_2 = explode('<span>', $release_temp);
-        $release = explode(" ", $r_t_2[1]);
-        $release[2] = str_replace(array('stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'czerwiec', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'), array('01', '02', '03', '04', '05', '06', '06', '07', '08', '09', '10', '11', '12'), $release[2]);
-        if ($release[1] < 10) {
-            $release[1] = '0' . $release[1];
+        //print_r($temp);
+        if (!$serial) {
+            $release_temp = $temp[5];
+            $r_t_2 = explode('<span>', $release_temp);
+            $release = explode(" ", $r_t_2[1]);
+
+            $release[2] = str_replace(array('stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'czerwiec', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'), array('01', '02', '03', '04', '05', '06', '06', '07', '08', '09', '10', '11', '12'), $release[2]);
+            if ($release[1] < 10) {
+                $release[1] = '0' . $release[1];
+            }
+            $release_date = $release[3] . '-' . $release[2] . '-' . $release[1];
         }
-        $release_date = $release[3] . '-' . $release[2] . '-' . $release[1];
+        else
+        {
+            $release_date = 0;
+        }
         //$desc = 'content tymczasowy';
-        $temp = array("release_date" => strip_tags($release_date), "desc" => trim(strip_tags($desc[1])), "fw_grade" => trim(strip_tags($grade[1])), "genres" => $genres, "poster" => $image);
+        $temp = array("release_date" => strip_tags($release_date), "desc" => trim(strip_tags($desc[1])), "fw_grade" => trim(strip_tags($grade[1])), "genres" => $genres, "poster" => $image, "countSeason" => $count_season);
         //print_r($desc);
         return $temp;
     }
@@ -269,7 +306,7 @@ class Controller_Films extends Controller_PageTemplate {
     private function _ajax_get_fw_list_film($name) {
         $strona = "http://www.filmweb.pl/search?q=" . $name;
         $useragent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1";
-            
+
         $rC = curl_init();
         curl_setopt($rC, CURLOPT_HEADER, 1);
         curl_setopt($rC, CURLOPT_COOKIEFILE, 'cookies.txt');
@@ -278,16 +315,18 @@ class Controller_Films extends Controller_PageTemplate {
         curl_setopt($rC, CURLOPT_VERBOSE, 0);
         curl_setopt($rC, CURLOPT_USERAGENT, $useragent);
         curl_setopt($rC, CURLOPT_REFERER, 'www.google.pl');
-        curl_setopt($rC, CURLOPT_URL, "$strona");
+        curl_setopt($rC, CURLOPT_URL, $strona);
 
         $wejscie = curl_exec($rC);
         curl_setopt($rC, CURLOPT_REFERER, $strona);
         $wejscie = curl_exec($rC);
-
+        //print_r($wejscie);
+        //iconv("UTF-8", "UTF-8", $wejscie);
         curl_close($rC);
         //preg_match('/<div class="filmPlot bottom-15"><p class=text>(.+?)<\/p><\/div>/ism', $wejscie, $wyjscie); gotowe na desc
-        //preg_match($pattern, $subject)
-        preg_match_all('/<h3><a href="(.+?)" class="hdr hdr-medium hitTitle"> (.+?)<\/a>(.+?)<\/h3>/ism', $wejscie, $wyjscie);
+        //preg_match($pattern, $subject)<span class="hdr hdr-medium hitTitle">(.+?)<\/span>
+        preg_match_all('/<h3><a href="(.+?)" class="hdr hdr-medium hitTitle"> (.+?)<\/a><span class="hdr hdr-medium hitTitle">(.+?)<\/span><\/h3>/ism', $wejscie, $wyjscie);
+        //print_r($wyjscie);
         (array) $temp = array();
         /* $temp2 = "[ ";
           foreach($wyjscie[0] as $val)
@@ -299,15 +338,20 @@ class Controller_Films extends Controller_PageTemplate {
           //return $temp;
          *
          */
+        //print_r($wyjscie);
         //$temp = array();
-        for ($i = 0; $i < 10; $i++) {
-            $temp[$i] = (object) array('label' => trim(strip_tags($wyjscie[0][$i])), 'value' => trim(strip_tags($wyjscie[0][$i])), 'href' => $wyjscie[1][$i]);
+        $lenght = sizeof($wyjscie[0]);
+        for ($i = 0; $i < $lenght; $i++) { // bylo 10
+            if (!strpos($wyjscie[0][$i], '<p class="text"')) {
+
+                $temp[$i] = array('label' => trim(strip_tags($wyjscie[0][$i])), 'value' => trim(strip_tags($wyjscie[0][$i])), 'href' => $wyjscie[1][$i]);
+            }
         }
         //foreach($wyjscie[0] as $val)
         //{
         //$temp[] = strip_tags($val);
         //}
-
+        //print_r($temp);
         return $temp;
     }
 
@@ -377,6 +421,20 @@ class Controller_Films extends Controller_PageTemplate {
             }
         } else {
             //trzeba sie zalogować
+        }
+    }
+
+    public function action_remove() {
+        $id = (int) $this->request->param('id');
+        if ($this->_auth->logged_in('admin')) {
+            $film = ORM::factory('Film', $id);
+            $dir = 'upload/poster/';
+            //echo DOCROOT;
+            if (is_file(DOCROOT . $dir . $film->poster_hash . '.jpg')) {
+                unlink(DOCROOT . $dir . $film->poster_hash . '.jpg');
+            }
+            $film->delete();
+            echo '<h1>Film usunieto!</h1>';
         }
     }
 

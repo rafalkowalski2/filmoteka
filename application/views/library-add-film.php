@@ -21,8 +21,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-9">
-                            <input type="text" name="poster" id="poster" />
+                        <div class="col-sm-9 col-sm-offset-3 poster-div text-center">
+                            <input type="hidden" name="poster" id="poster" />
                         </div>
                     </div>
                     <div class="form-group">

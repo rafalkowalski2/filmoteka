@@ -53,7 +53,7 @@
 													<td>'.$value['l_name'].'</td>
 													<td class="col-md-2">
 														<a href="'.URL::site(Request::current()->param('language').'/films/edit/').'/'.$value['f_id'].'"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> '.__('Edit').'</a>
-														<a href="'.URL::site(Request::current()->param('language').'/films/remove/').'/'.$value['f_id'].'"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> '.__('Remowe').'</a>
+														<a class="delete-film" href="'.URL::site(Request::current()->param('language').'/films/remove/').'/'.$value['f_id'].'" data-film-id="'.$value['f_id'].'"> <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> '.__('Remowe').'</a>
 													</td>
 											 	 </tr>'."\n";
 											$i++; 

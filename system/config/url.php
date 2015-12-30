@@ -3,7 +3,8 @@
 return array(
 
 	'trusted_hosts' => array(
-                '192.168.0.17'
+                '192.168.0.*',
+                'mvc'
 		// Set up your hostnames here
 		//
 		// Example:

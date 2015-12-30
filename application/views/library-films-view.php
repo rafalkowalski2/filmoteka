@@ -27,7 +27,11 @@
             <div class="row">
                 <div class="col-sm-3 text-center">
                     <?php
-                    if (!empty($film['f_poster'])) {
+                    if (!empty($film['f_poster_hash'])) {
+                        ?>
+                        <img src="<?php echo URL::site('/upload/poster/') . '/' .$film['f_poster_hash'].'.jpg'; ?>" class="img-thumbnail" alt="Film title" />
+                        <?php
+                    } else if (!empty($film['f_poster'])) {
                         ?>
                         <img src="<?php echo $film['f_poster']; ?>" class="img-thumbnail" alt="Film title" />
                         <?php
@@ -39,8 +43,7 @@
                     ?>
                 </div>
                 <div class="col-sm-9">
-                    <?php
-                    ?>
+<?php ?>
                     <div class="row">
                         <div class="col-sm-2 ">
                             <h4><?php echo __('Title:') ?></h4>
@@ -52,7 +55,7 @@
                             <h4><?php echo __('Description:'); ?></h4>
                         </div>
                         <div class="col-sm-5 text-justify">
-                            <?php echo $film['f_description']; ?>
+<?php echo $film['f_description']; ?>
                         </div>
                     </div>
                     <div class="row">
@@ -61,14 +64,16 @@
                         </div>
                         <div class="col-sm-3">
                             <h4>
-                                <?php
-                                if (is_array($film['gen_name'])) {
-                                    foreach ($film['gen_name'] as $key => $value) {
-                                        if(!empty($film['gen_name'][$key+1])) echo $value . ', ';
-                                        else echo $value;
-                                    }
-                                }
-                                ?>
+<?php
+if (is_array($film['gen_name'])) {
+    foreach ($film['gen_name'] as $key => $value) {
+        if (!empty($film['gen_name'][$key + 1]))
+            echo $value . ', ';
+        else
+            echo $value;
+    }
+}
+?>
                             </h4>
                         </div>
                         <div class="col-sm-2 ">
