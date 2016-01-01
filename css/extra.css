@@ -37,7 +37,6 @@
 }
 #loading-animation
 {
-    
     text-align:center;
     padding-top:12%;
     vertical-align: middle;
@@ -47,4 +46,5 @@
 #loading-text
 {
     text-align:center;
+    z-index: 9999;
 }

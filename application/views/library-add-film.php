@@ -10,7 +10,7 @@
                     ->bind('success', $success)
                     ->bind('success_message', $success_message);
             ?>
-            <form class="form-horizontal" action="<?php echo Request::detect_uri(); ?>" role="form" name="form-add-film" method="post">
+            <form class="form-horizontal" action="<?php echo Request::detect_uri(); ?>" role="form" name="form-add-film" enctype="multipart/form-data" method="post">
                 <div class="col-sm-6">
                     <div id="test">
                     </div>

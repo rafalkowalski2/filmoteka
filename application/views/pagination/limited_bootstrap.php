@@ -1,9 +1,15 @@
+<?php
+$filter = '';
+if (!empty($_SERVER['REDIRECT_QUERY_STRING'])) {
+    $filter = '?' . $_SERVER['REDIRECT_QUERY_STRING'];
+}
+?>
 <ul class="pagination pagination-sm">
 
 
     <?php if ($previous_page !== FALSE): ?>
         <li>
-            <a href="<?php echo URL::site(Request::current()->param('language').'/'.Request::current()->controller().'/'.Request::current()->action().'/page/'.$previous_page) ?>" rel="prev">
+            <a href="<?php echo URL::site(Request::current()->param('language') . '/' . Request::current()->controller() . '/' . Request::current()->action() . '/page/' . $previous_page . $filter) ?>" rel="prev">
                 <?php echo __('PREVIOUS') ?></a>
         </li>
     <?php else: ?>
@@ -22,7 +28,7 @@
         for ($i = $offset - $left + 1; $i < $offset; $i++):
             ?>
             <li>
-                <a href="<?php echo URL::site(Request::current()->param('language').'/'.Request::current()->controller().'/'.Request::current()->action().'/page/'.$i) ?>">
+                <a href="<?php echo URL::site(Request::current()->param('language') . '/' . Request::current()->controller() . '/' . Request::current()->action() . '/page/' . $i . $filter) ?>">
                     <?php echo abs($i) ?></a>
             </li>
 
@@ -41,7 +47,7 @@
             </li>
         <?php else: ?>
             <li>
-                <a href="<?php echo URL::site(Request::current()->param('language').'/'.Request::current()->controller().'/'.Request::current()->action().'/page/'.$i) ?>">
+                <a href="<?php echo URL::site(Request::current()->param('language') . '/' . Request::current()->controller() . '/' . Request::current()->action() . '/page/' . $i . $filter) ?>">
                     <?php echo $i ?></a>
             </li>
         <?php endif ?>
@@ -50,7 +56,7 @@
 
     <?php if ($next_page !== FALSE): ?>
         <li>
-            <a href="<?php echo URL::site(Request::current()->param('language').'/'.Request::current()->controller().'/'.Request::current()->action().'/page/'.$next_page) ?>" rel="next">
+            <a href="<?php echo URL::site(Request::current()->param('language') . '/' . Request::current()->controller() . '/' . Request::current()->action() . '/page/' . $next_page . $filter) ?>" rel="next">
                 <?php echo __('NEXT') ?></a>
         </li>
     <?php else: ?>

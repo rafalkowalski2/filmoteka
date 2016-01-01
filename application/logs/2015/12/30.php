@@ -702,3 +702,23 @@
 #7 /var/www/system/classes/Kohana/Request.php(997): Kohana_Request_Client->execute(Object(Request))
 #8 /var/www/index.php(117): Kohana_Request->execute()
 #9 {main} in file:line
+2015-12-30 15:21:03 --- EMERGENCY: ErrorException [ 8 ]: Undefined variable: count_season ~ APPPATH/classes/Controller/Films.php [ 301 ] in /var/www/application/classes/Controller/Films.php:301
+2015-12-30 15:21:03 --- DEBUG: #0 /var/www/application/classes/Controller/Films.php(301): Kohana_Core::error_handler(8, 'Undefined varia...', '/var/www/applic...', 301, Array)
+#1 /var/www/application/classes/Controller/Films.php(227): Controller_Films->_ajax_get_detail_film('/film/Avengers-...')
+#2 /var/www/system/classes/Kohana/Controller.php(84): Controller_Films->action_ajax_film_detail()
+#3 [internal function]: Kohana_Controller->execute()
+#4 /var/www/system/classes/Kohana/Request/Client/Internal.php(97): ReflectionMethod->invoke(Object(Controller_Films))
+#5 /var/www/system/classes/Kohana/Request/Client.php(114): Kohana_Request_Client_Internal->execute_request(Object(Request), Object(Response))
+#6 /var/www/system/classes/Kohana/Request.php(997): Kohana_Request_Client->execute(Object(Request))
+#7 /var/www/index.php(117): Kohana_Request->execute()
+#8 {main} in /var/www/application/classes/Controller/Films.php:301
+2015-12-30 15:21:54 --- EMERGENCY: ErrorException [ 8 ]: Undefined variable: count_season ~ APPPATH/classes/Controller/Films.php [ 302 ] in /var/www/application/classes/Controller/Films.php:302
+2015-12-30 15:21:54 --- DEBUG: #0 /var/www/application/classes/Controller/Films.php(302): Kohana_Core::error_handler(8, 'Undefined varia...', '/var/www/applic...', 302, Array)
+#1 /var/www/application/classes/Controller/Films.php(227): Controller_Films->_ajax_get_detail_film('/film/Avengers-...')
+#2 /var/www/system/classes/Kohana/Controller.php(84): Controller_Films->action_ajax_film_detail()
+#3 [internal function]: Kohana_Controller->execute()
+#4 /var/www/system/classes/Kohana/Request/Client/Internal.php(97): ReflectionMethod->invoke(Object(Controller_Films))
+#5 /var/www/system/classes/Kohana/Request/Client.php(114): Kohana_Request_Client_Internal->execute_request(Object(Request), Object(Response))
+#6 /var/www/system/classes/Kohana/Request.php(997): Kohana_Request_Client->execute(Object(Request))
+#7 /var/www/index.php(117): Kohana_Request->execute()
+#8 {main} in /var/www/application/classes/Controller/Films.php:302

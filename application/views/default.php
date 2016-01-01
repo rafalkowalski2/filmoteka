@@ -4,13 +4,15 @@
     <head>
         <title><?php echo $title; ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <base href="<?php echo URL::site(NULL, TRUE); ?>"
-              <meta name="viewport" content="width=device-width, initial-scale=1">
+        <base href="<?php echo URL::site(NULL, TRUE); ?>">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="http://<?php echo $server; ?>/css/bootstrap.min.css">
         <link rel="stylesheet" href="http://<?php echo $server; ?>/css/jumbotron.css">
         <link rel="stylesheet" href="http://<?php echo $server; ?>/css/extra.css">
         <link rel="stylesheet" href="http://<?php echo $server; ?>/css/jquery-ui.min.css">
         <link rel="stylesheet" href="http://<?php echo $server; ?>/css/bootstrap-multiselect.css">
+        <link rel="stylesheet" href="http://<?php echo $server; ?>/css/alertify.core.css">
+        <link rel="stylesheet" href="http://<?php echo $server; ?>/css/alertify.bootstrap.css">
     </head>
     <body>
         <div id="loadind-wrapper" class="hidden-content">
@@ -88,7 +90,7 @@
             </div>
         </nav>
         <div id="error">
-            
+
         </div>
         <?php
         if (isset($content))
@@ -97,9 +99,12 @@
         <footer>
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-11">
+                    <div class="col-sm-10">
                         <p>&copy; Rafał Kowalski
                             <?php
+                            /*
+                             * Do not remove this!
+                             */
                             $current_date = Date('Y');
                             if ($current_date != 2015) {
                                 echo '2015 - ' . $current_date;
@@ -108,9 +113,9 @@
                             }
                             ?>
                         </p>
-                        <p>VER 30/12/2015 23:44</p>
+                        <p>VER 02/01/2016 00:31</p>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
                         <div class="form-group">
                             <form class="form-horizontal" action="<?php echo Request::detect_uri(); ?>" role="form" method="post">
                                 <select class="form-control" onchange="this.form.submit()" id="language" name="language">
@@ -135,6 +140,7 @@
         <script src="http://<?php echo $server; ?>/js/bootstrap.min.js"></script>
         <script src="http://<?php echo $server; ?>/js/jquery-ui.min.js"></script>
         <script src="http://<?php echo $server; ?>/js/bootstrap-multiselect.js"></script>
+        <script src="http://<?php echo $server; ?>/js/alertify.min.js"></script>
         <script src="http://<?php echo $server; ?>/js/filmoteka.js"></script>
     </body>
 </html>

@@ -132,53 +132,98 @@ class Model_Film extends ORM {
         return $query;
     }
 
-    public function get_number_of_films($user_id) {
-        return DB::select(array(DB::expr('COUNT(*)'), 'total_count'))
-                        ->from($this->_table_name)
-                        ->join('films_users')
-                        ->on('films_users.film_id', '=', 'films.id')
-                        ->join('users')
-                        ->on('users.id', '=', 'films_users.user_id')
-                        ->join('films_locations')
-                        ->on('films_locations.film_id', '=', 'films.id')
-                        ->join('locations')
-                        ->on('locations.id', '=', 'films_locations.location_id')
-                        ->join('films_users_films_details')
-                        ->on('films_users_films_details.film_id', '=', 'films.id')
-                        ->join('user_film_details')
-                        ->on('user_film_details.id', '=', 'films_users_films_details.details_id')
-                        //->group_by('films.id')
-                        ->where('users.id', '=', $user_id)
-                        //->group_by('count')
-                        ->execute()
-                        ->get('total_count');
+    public function get_number_of_films($user_id, $_genres, $_start_date, $_end_date) {
+        $query = DB::select(/* array(DB::expr('COUNT("films.name")'), 'total_count'), */ array('films.name', 'fname'))
+                ->from($this->_table_name)
+                ->join('films_genres')
+                ->on('films_genres.film_id', '=', 'films.id')
+                ->join('genres')
+                ->on('genres.id', '=', 'films_genres.genres_id')
+                ->join('films_users')
+                ->on('films_users.film_id', '=', 'films.id')
+                ->join('users')
+                ->on('users.id', '=', 'films_users.user_id')
+                ->join('films_locations')
+                ->on('films_locations.film_id', '=', 'films.id')
+                ->join('locations')
+                ->on('locations.id', '=', 'films_locations.location_id')
+                ->join('films_users_films_details')
+                ->on('films_users_films_details.film_id', '=', 'films.id')
+                ->join('user_film_details')
+                ->on('user_film_details.id', '=', 'films_users_films_details.details_id')
+                ->group_by('films.id')
+                ->where('users.id', '=', $user_id);
+        /*if ($_title != -1) {
+            $query = $query->and_where('films.name', 'LIKE', 'tr');
+        }*/
+        if ($_genres != -1) {
+            $query = $query->and_where('genres.id', '=', $_genres);
+        }
+        if ($_start_date != -1) {
+            $_start_date = $_start_date . '-00-00';
+            if ($_end_date != -1) {
+                $_end_date = $_end_date . '-00-00';
+                $query = $query->and_where('releasedate', 'BETWEEN', array($_start_date, $_end_date));
+            } else {
+                $query = $query->and_where('releasedate', '>', $_start_date);
+            }
+        } else {
+            if ($_end_date != -1) {
+                $_end_date = $_end_date . '-00-00';
+                $query = $query->and_where('releasedate', '<', $_end_date);
+            }
+        }
+        //->group_by('count')
+        return $query->execute();
+        //->get('total_count');
     }
 
-    public function get_user_films($user_id, $_offset, $_limit) {
-        return DB::select(
-                                array('films.id', 'f_id'), array('films.name', 'f_name'), array('genres.name', 'g_name'), array('locations.name', 'l_name'), array('user_film_details.resolution', 'd_resolution')
-                        )
-                        ->from($this->_table_name)
-                        ->join('films_users')
-                        ->on('films_users.film_id', '=', 'films.id')
-                        ->join('users')
-                        ->on('users.id', '=', 'films_users.user_id')
-                        ->join('films_genres')
-                        ->on('films_genres.film_id', '=', 'films.id')
-                        ->join('genres')
-                        ->on('genres.id', '=', 'films_genres.genres_id')
-                        ->join('films_locations')
-                        ->on('films_locations.film_id', '=', 'films.id')
-                        ->join('locations')
-                        ->on('locations.id', '=', 'films_locations.location_id')
-                        ->join('films_users_films_details')
-                        ->on('films_users_films_details.film_id', '=', 'films.id')
-                        ->join('user_film_details')
-                        ->on('user_film_details.id', '=', 'films_users_films_details.details_id')
-                        ->group_by('films.id')
-                        ->order_by('films.name', 'asc')
-                        ->where('users.id', '=', $user_id)
-                        ->limit($_limit)
+    public function get_user_films($user_id, $_offset, $_limit, $_genres, $_start_date, $_end_date, $_title) {
+        $query = DB::select(
+                        array('films.id', 'f_id'), array('films.name', 'f_name'), array('genres.name', 'g_name'), array('locations.name', 'l_name'), array('user_film_details.resolution', 'd_resolution')
+                )
+                ->from($this->_table_name)
+                ->join('films_users')
+                ->on('films_users.film_id', '=', 'films.id')
+                ->join('users')
+                ->on('users.id', '=', 'films_users.user_id')
+                ->join('films_genres')
+                ->on('films_genres.film_id', '=', 'films.id')
+                ->join('genres')
+                ->on('genres.id', '=', 'films_genres.genres_id')
+                ->join('films_locations')
+                ->on('films_locations.film_id', '=', 'films.id')
+                ->join('locations')
+                ->on('locations.id', '=', 'films_locations.location_id')
+                ->join('films_users_films_details')
+                ->on('films_users_films_details.film_id', '=', 'films.id')
+                ->join('user_film_details')
+                ->on('user_film_details.id', '=', 'films_users_films_details.details_id')
+                ->group_by('films.id')
+                ->order_by('films.name', 'asc')
+                ->where('users.id', '=', $user_id);
+        if($_title != -1)
+        {
+            $query = $query->and_where('films.name', 'LIKE', '%'.$_title.'%');
+        }
+        if ($_genres != -1) {
+            $query = $query->and_where('genres.id', '=', $_genres);
+        }
+        if ($_start_date != -1) {
+            $_start_date = $_start_date . '-00-00';
+            if ($_end_date != -1) {
+                $_end_date = $_end_date . '-00-00';
+                $query = $query->and_where('releasedate', 'BETWEEN', array($_start_date, $_end_date));
+            } else {
+                $query = $query->and_where('releasedate', '>', $_start_date);
+            }
+        } else {
+            if ($_end_date != -1) {
+                $_end_date = $_end_date . '-00-00';
+                $query = $query->and_where('releasedate', '<', $_end_date);
+            }
+        }
+        return $query->limit($_limit)
                         ->offset($_offset)
                         ->execute();
     }

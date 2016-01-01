@@ -21,6 +21,164 @@ class Controller_Films extends Controller_PageTemplate {
         $test2;
     }
 
+    public function action_ajax_add_film() {
+        if ($this->_auth->logged_in('user')) {
+            $film_id;
+            $this->auto_render = false;
+            $genres_list = explode(',', $this->request->post('genres'));
+            (array) $er = array();
+            $location = ORM::factory('Location');
+            $location->where('name', '=', $this->request->post('location'))->find();
+            (array) $ajax_respond = array();
+            (array) $ajax_respond['log'] = array();
+            (array) $ajax_respond['error'] = array();
+            //films
+            try {
+                $film = ORM::factory('Film');
+                if ($film->unique_key_exists($this->request->post('film-name'), 'name')) {// sprawdzanie czy film jest już w bazie
+                    array_push($ajax_respond['log'], 'film jest już w bazie');
+                    //echo 'film jest już w bazie';
+                    $film->where('name', '=', trim($this->request->post('film-name')));
+                    $film->find();
+                    $film_id = $film->id;
+                    if ($film->user_already_has_film($this->request->post('film-name'), $this->_user_id)) {// sprawdzanie czy user dodał już film
+                        array_push($ajax_respond['log'], 'user ma już film');
+                        //echo '<br />user ma już film ';
+                        if (TRUE) {
+                            //film ma już lokoacje
+                        } else {
+                            
+                        }
+                    } else {//user nie dodał jeszcze filmu
+                        //echo 'dodawnaie filmu do usera';
+                        $film_user2 = ORM::factory('Film')->where('name', '=', trim($this->request->post('film-name')))->find();
+                        //$film -> find();
+                        //$film -> save();
+                        $film_id = $film_user2->id;
+                        $user = ORM::factory('User')->where('id', '=', $this->_auth->get_user()->pk())->find();
+                        $film->add('users', $user);
+                        //film jest w bazie, dodanie filmu do usera.
+                    }
+                } else {//filmu nie ma w bazie
+                    $film->name = $this->request->post('film-name');
+                    $film->poster = $this->request->post('poster');
+                    $film->poster_hash = md5($this->request->post('film-name'));
+                    $film->releasedate = $this->request->post('releasedate');
+                    $film->description = $this->request->post('description');
+                    $film->fw_grade = $this->request->post('fw_grade');
+                    $film->filmweb = $this->request->post('filmweb');
+                    $film->save();
+                    $film_id = $film->id;
+                    //zapisanie filmu do bazy
+                    //echo $this->_film_id = $film->id;
+                    $dir = 'upload/poster/';
+                    copy($this->request->post('poster'), DOCROOT . $dir . md5($this->request->post('film-name')) . '.jpg');
+                    //id zapisanego filmu
+                    $user = ORM::factory('User')->where('id', '=', $this->_auth->get_user()->pk())->find();
+                    $film->add('users', $user);
+                    //skojarzenie filmu z użytkownikiem
+                }
+            } catch (ORM_Validation_Exception $e) {
+                $er = array_merge($er, $e->errors('models'));
+                //print_r($er);
+                // $this->_set_error_status();
+            }
+            try {
+                $details = ORM::factory('Details');
+                if ($details->user_has_already_add_details_to_film($this->_film_id, $this->_auth->get_user()->pk())) {
+                    //throw new Exception('user dodaał już details');
+                } else {
+                    //echo '<h1>'.$this->_film_id.'</h1>';
+                    $details->resolution = $this->request->post('resolution');
+                    $details->filesize = $this->request->post('filesize');
+                    $details->duration = $this->request->post('duration');
+                    $details->language = $this->request->post('film-language');
+                    $details->save();
+                    //zapisanie details dla filmu
+                    $film_1 = ORM::factory('Film')->where('id', '=', $film_id)->find();
+                    $details->add('films', $film_1);
+                    //skojarzenie details z filmem
+                    $user = ORM::factory('User')->where('id', '=', $this->_auth->get_user()->pk())->find();
+                    $details->add('users', $user);
+                    // skojarzenie details z usersem
+                }
+            } catch (ORM_Validation_Exception $e) {
+                $er = array_merge($er, $e->errors('models'));
+                //$this->_set_error_status();
+            }
+            //genres
+            //print_r($this->request->post('genres'));
+            try {
+                $genres = ORM::factory('Genres');
+                if ($genres->user_has_already_add_genres_to_his_film($film_id, $this->_auth->get_user()->pk())) {
+                    array_push($ajax_respond['log'], 'user dodaał już genres');
+                    //echo '<br /> user dodaał już genres';
+                } else {
+                    foreach ($genres_list as $value) {
+                        //echo $value;
+                        $genre = ORM::factory('Genres');
+                        $genre->where('id', '=', $value)->find();
+                        $film_1 = ORM::factory('Film')->where('id', '=', $film_id)->find();
+                        $genre->add('films', $film_1);
+                        //skojarzenie genres z filmem
+                        $user = ORM::factory('User')->where('id', '=', $this->_auth->get_user()->pk())->find();
+                        $genre->add('users', $user);
+                        // skojarzenie genres z usersem
+                    }
+                }
+            } catch (ORM_Validation_Exception $e) {
+                $er = array_merge($er, $e->errors('models'));
+                //$this->_set_error_status();
+            }
+            //carries
+            try {
+                $carrier = ORM::factory('Carrier');
+                if ($carrier->user_has_already_add_carrier_to_his_film($film_id)) {
+                    array_push($ajax_respond['log'], 'user dodaał już carries');
+                    //echo '<br /> user dodaał już carries';
+                } else {
+                    $carrier->where('id', '=', $this->request->post('carrier'))->find()->save();
+                    $film_1 = ORM::factory('Film')->where('id', '=', $film_id)->find();
+                    $carrier->add('films', $film_1);
+                    //skojarzenie carrier z filmem
+                    $user = ORM::factory('User')->where('id', '=', $this->_auth->get_user()->pk())->find();
+                    $carrier->add('users', $user);
+                    // skojarzenie carrier z usersem
+                }
+            } catch (ORM_Validation_Exception $e) {
+                $er = array_merge($er, $e->errors('models'));
+                //$this->_set_error_status();
+            }
+            try {
+                $location = ORM::factory('Location');
+                if ($location->user_has_already_add_location_to_his_film($film_id)) {
+                    
+                } else {
+                    $location->where('id', '=', $this->request->post('location'))->find()->save();
+                    $film_1 = ORM::factory('Film')->where('id', '=', $film_id)->find();
+                    $location->add('films', $film_1);
+                    //skojarzenie carrier z filmem
+                }
+            } catch (ORM_Validation_Exception $e) {
+                $er = array_merge($er, $e->errors('models'));
+                // $this->_set_error_status();
+            }
+            //$this->_set_error_message($er);
+            array_push($ajax_respond['error'], $er);
+            if(empty($ajax_respond['error']))
+            {
+                unset($ajax_respond['error']);
+            }
+            if (empty($ajax_respond['log'])) {
+                $ajax_respond['success'][0] = 'Film został poprawnie dodany';
+            }
+            print_r(json_encode($ajax_respond));
+            //print_r($er);
+        }
+        /* print_r($_POST);
+          print_r($_FILES); */
+    }
+
     public function action_add() {
         if ($this->_auth->logged_in('user')) {
             $this->template->content = View::factory('library-add-film');
@@ -72,9 +230,9 @@ class Controller_Films extends Controller_PageTemplate {
 
                         $film->filmweb = $this->request->post('filmweb');
 
-                        print_r($film->save());
+                        $film->save();
                         //zapisanie filmu do bazy
-                        echo $this->_film_id = $film->id;
+                        $this->_film_id = $film->id;
                         $dir = 'upload/poster/';
                         copy($this->request->post('poster'), DOCROOT . $dir . md5($this->request->post('film-name')) . '.jpg');
                         //id zapisanego filmu
@@ -177,11 +335,18 @@ class Controller_Films extends Controller_PageTemplate {
     public function action_my() {
         if ($this->_auth->logged_in('user')) {
             $this->template->content = View::factory('library-films-my');
+            $this->_set_extra_info();
             $films = ORM::factory('Film');
-            echo 'num_pages- ' . Request::current()->param("page");
-            $total_films = $films->get_number_of_films($this->_user_id);
-            $pagination = Pagination::factory(array('total_items' => $total_films,));
-            $user_films = $films->get_user_films($this->_auth->get_user()->pk(), $pagination->offset, $pagination->items_per_page);
+            //echo 'num_pages- ' . Request::current()->param("page");
+            (int)$genres_filter = empty($_GET['genres-filter'])? -1: (int)$_GET['genres-filter'];
+            (int)$star_date = empty($_GET['start-date-filter'])? -1: (int)$_GET['start-date-filter'];
+            (int)$end_date = empty($_GET['end-date-filter'])? -1: (int)$_GET['end-date-filter'];
+            (string)$title = empty($_GET['title-filter'])? -1: (string)$_GET['title-filter'];
+            //echo $genres_filter;
+            $total = $films->get_number_of_films($this->_user_id, $genres_filter, $star_date, $end_date);
+            count($total);
+            $pagination = Pagination::factory(array('total_items' => count($total),));
+            $user_films = $films->get_user_films($this->_auth->get_user()->pk(), $pagination->offset, $pagination->items_per_page, $genres_filter, $star_date, $end_date, $title);
             $this->template->content
                     ->set('user_films', $user_films)
                     ->set('pagination', $pagination);
@@ -229,8 +394,9 @@ class Controller_Films extends Controller_PageTemplate {
     }
 
     private function _ajax_get_detail_film($href) {
-        (bool)$serial = false;
-        if(strpos($href, 'serial')) (bool)$serial = true;
+        (bool) $serial = false;
+        if (strpos($href, 'serial'))
+            (bool) $serial = true;
         $strona = "http://www.filmweb.pl" . $href;
         $useragent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1";
 
@@ -265,13 +431,11 @@ class Controller_Films extends Controller_PageTemplate {
                 }
             }
             $genres = $temp;
-        }
-        else
-        {
+        } else {
             $genres[1] = "Serial"; //zrzutowani typu
         }
-        if($serial)
-        {
+        $count_season = 0;
+        if ($serial) {
             $season;
             preg_match('/<div class="box full-width"><ul class="list inline sep-line">(.+?)><\/ul><\/div>/ism', $wejscie, $season);
             $season = explode('<li>', $season[1]);
@@ -292,9 +456,7 @@ class Controller_Films extends Controller_PageTemplate {
                 $release[1] = '0' . $release[1];
             }
             $release_date = $release[3] . '-' . $release[2] . '-' . $release[1];
-        }
-        else
-        {
+        } else {
             $release_date = 0;
         }
         //$desc = 'content tymczasowy';
