@@ -5,7 +5,7 @@ class Controller_Genres extends Controller_PageTemplate
 	{
 		if($this->_auth->logged_in('admin'))
 		{
-			$this->template->content = View::factory('library-add-film-genre');
+			$this->template->content = View::factory('library/genre/add');
 			if($this->request->post('add-film-genre'))
 			{
 				try
@@ -31,7 +31,7 @@ class Controller_Genres extends Controller_PageTemplate
 			$total 		= $genres->count_all();
 			$pagination = Pagination::factory(array('total_items' => $total));
 			$results	= $genres->order_by('name','asc')->limit($pagination->items_per_page)->offset($pagination->offset)->find_all();
-			$this->template->content = View::factory('library-genres-list');
+			$this->template->content = View::factory('library/genre/list');
 			$this->template->content->set('genres', $results)->set('pagination', $pagination);
 			$this->response->body($this->template->content);
 		}
@@ -46,7 +46,7 @@ class Controller_Genres extends Controller_PageTemplate
 		if($this->_auth->logged_in('admin'))
 		{
 			$genre = ORM::factory('Genres',$id);
-			$this->template->content = View::factory('library-genres-edit');
+			$this->template->content = View::factory('library/genre/edit');
 			$this->template->content->set('genre', $genre);
 			$this->response->body($this->template->content);
 			if($this->request->post('save-film-genre'))

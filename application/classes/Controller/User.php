@@ -9,7 +9,7 @@ class Controller_User extends Controller_PageTemplate
 	{
 		if(!$this->_auth->logged_in())
 		{
-			$this->template->content = View::factory('login');
+			$this->template->content = View::factory('user/login-panel');
 			if($this->request->post('login'))
 			{
 				$this->email	= $this->request->post('email');
@@ -59,12 +59,12 @@ class Controller_User extends Controller_PageTemplate
 	}
 	public function action_logged()
 	{
-		if($this->_auth->logged_in()) $this->template->content = View::factory('logged');
+		if($this->_auth->logged_in()) $this->template->content = View::factory('user/success-logged');
 		else $this->_unlogged();
 	}
 	public function action_loggedin()
 	{
-		if($this->_auth->logged_in()) $this->template->content = View::factory('loggedin');
+		if($this->_auth->logged_in()) $this->template->content = View::factory('user/loggedin');
 		else $this->_unlogged();
 	}
 	public function _unlogged()
@@ -77,13 +77,13 @@ class Controller_User extends Controller_PageTemplate
 	}
 	public function action_unlogged()
 	{
-		$this->template->content = View::factory('unlogged');
+		$this->template->content = View::factory('user/unlogged');
 	}
 	public function action_signup()
 	{
 		if(!$this->_auth->logged_in())
 		{
-			$this->template->content = View::factory('signup');
+			$this->template->content = View::factory('user/signup');
 			if($this->request->post('signup'))
 			{
 				try
@@ -125,7 +125,7 @@ class Controller_User extends Controller_PageTemplate
 	{
 		if($this->_auth->logged_in())
 		{
-			$this->template->content = View::factory('myprofile-info');
+			$this->template->content = View::factory('user/myprofile-info');
 		}
 		else
 		{
@@ -136,7 +136,7 @@ class Controller_User extends Controller_PageTemplate
 	{
 		if($this->_auth->logged_in())
 		{
-			$this->template->content = View::factory('myprofile-edit');
+			$this->template->content = View::factory('user/myprofile-edit');
 		}
 		else
 		{
@@ -147,7 +147,7 @@ class Controller_User extends Controller_PageTemplate
 	{
 		if($this->_auth->logged_in())
 		{
-			$this->template->content = View::factory('myprofile-changepassword');
+			$this->template->content = View::factory('user/myprofile-changepassword');
 		}
 		else
 		{

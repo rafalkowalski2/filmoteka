@@ -67,7 +67,7 @@
                             </ul>
                         </li>
                         <li><a href="#about"><?php echo __('ABOUT'); ?></a></li>
-                        <li><a href="#contact"><?php echo __('CONTACT'); ?></a></li>
+                        <li><a href="<?php echo URL::site(Request::current()->param('language') . '/contact'); ?>"><?php echo __('CONTACT'); ?></a></li>
                     </ul>
                     <div class="pull-right">
                         <ul class="nav navbar-nav">

@@ -181,7 +181,7 @@ class Controller_Films extends Controller_PageTemplate {
 
     public function action_add() {
         if ($this->_auth->logged_in('user')) {
-            $this->template->content = View::factory('library-add-film');
+            $this->template->content = View::factory('library/film/add');
             $this->_set_extra_info();
             (array) $er = array();
             if ($this->request->post('add-film')) {//dodawanie filu
@@ -334,7 +334,7 @@ class Controller_Films extends Controller_PageTemplate {
 
     public function action_my() {
         if ($this->_auth->logged_in('user')) {
-            $this->template->content = View::factory('library-films-my');
+            $this->template->content = View::factory('library/film/my');
             $this->_set_extra_info();
             $films = ORM::factory('Film');
             //echo 'num_pages- ' . Request::current()->param("page");
@@ -356,7 +356,7 @@ class Controller_Films extends Controller_PageTemplate {
 
     public function action_view() {
         if ((int) $this->request->param('id')) {
-            $this->template->content = View::factory('library-films-view');
+            $this->template->content = View::factory('library/film/view');
             $films = ORM::factory('Film');
             $films = $films->get_film($this->_auth->get_user()->pk(), $this->request->param('id'));
             $films = $this->prepare_film_detail($films);
@@ -525,7 +525,7 @@ class Controller_Films extends Controller_PageTemplate {
                 $film = ORM::factory('Film');
                 $film_detail_temp = $film->get_film($this->_auth->get_user()->pk(), $id);
                 $film_detail = $this->prepare_film_detail($film_detail_temp);
-                $this->template->content = View::factory('library-films-edit');
+                $this->template->content = View::factory('library/film/edit');
                 $this->_set_extra_info();
                 if ($this->request->post('update-film')) {
                     try {

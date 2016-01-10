@@ -5,7 +5,7 @@ class Controller_Carriers extends Controller_PageTemplate
 	{
 		if($this->_auth->logged_in('admin'))
 		{
-			$this->template->content = View::factory('library-add-carrier');
+			$this->template->content = View::factory('library/carrier/add');
 			if($this->request->post('add-carrier'))
 			{
 				try
@@ -26,7 +26,7 @@ class Controller_Carriers extends Controller_PageTemplate
 	{
 		if($this->_auth->logged_in('admin'))
 		{
-			$this->template->content = View::factory('library-carries-list');
+			$this->template->content = View::factory('library/carrier/list');
 			$locations = $this->_get_carries();
 			$this->template->content->set('carries', $locations);
 			$this->response->body($this->template->content);
@@ -38,7 +38,7 @@ class Controller_Carriers extends Controller_PageTemplate
 		if($this->_auth->logged_in('admin'))
 		{
 			$carrier = ORM::factory('Carrier',$id);
-			$this->template->content = View::factory('library-carries-edit');
+			$this->template->content = View::factory('library/carrier/edit');
 			$this->template->content->set('carrier', $carrier);
 			$this->response->body($this->template->content);
 			if($this->request->post('save-carrier'))

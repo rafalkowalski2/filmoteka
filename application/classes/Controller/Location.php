@@ -6,7 +6,7 @@ class Controller_Location extends Controller_PageTemplate
 	{
 		if($this->_auth->logged_in('user'))
 		{
-			$this->template->content = View::factory('library-add-location');
+			$this->template->content = View::factory('library/location/add');
 			if($this->request->post('add-location'))
 			{
 				try
@@ -31,7 +31,7 @@ class Controller_Location extends Controller_PageTemplate
 	{
 		if($this->_auth->logged_in('user'))
 		{
-			$this->template->content = View::factory('library-my-locations');
+			$this->template->content = View::factory('library/location/my');
 			$locations = $this->_get_locations();
 			$this->template->content->set('locations', $locations);
 			$this->response->body($this->template->content);
@@ -43,7 +43,7 @@ class Controller_Location extends Controller_PageTemplate
 		if($this->_auth->logged_in('admin'))
 		{
 			$location = ORM::factory('Location',$id);
-			$this->template->content = View::factory('library-edit-location');
+			$this->template->content = View::factory('library/location/edit');
 			$this->template->content->set('location', $location);
 			$this->response->body($this->template->content);
 			if($this->request->post('save-location'))
