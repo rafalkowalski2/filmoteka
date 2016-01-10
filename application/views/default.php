@@ -113,7 +113,7 @@
                             }
                             ?>
                         </p>
-                        <p>VER 02/01/2016 00:31</p>
+                        <p>VER 10/01/2016 21:31</p>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
